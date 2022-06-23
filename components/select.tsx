@@ -1,4 +1,5 @@
 import React, { Component, FunctionComponent } from 'react';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 export const Select = (param:any)=>{
 
     const [checked,setChecked]=React.useState(false);
@@ -30,14 +31,14 @@ onClick={()=> setChecked(true)}
 </label>
 </div>
 
-<input type="checkbox" name={param.name} key={param.name} className="hidden peer" checked={checked} />
+<input type="checkbox" name={param.name} key={param.name} className="hidden peer" checked={checked}  />
 <div className="absolute rounded shadow bg-white overflow-hidden hidden peer-checked:flex flex-col w-80 mt-1 border border-gray-200">
 
 
  {
   (li?  (li?.map((value:string)=>{
         return(<div className="cursor-pointer group">
-        <a className="block p-2 border-transparent border-l-4 group-hover:border-blue-600 group-hover:bg-gray-100">{value}</a>
+        <a className="block p-2 border-transparent border-l-4 group-hover:border-blue-600 group-hover:bg-gray-100"  >{value}</a>
         </div>
         )
     })

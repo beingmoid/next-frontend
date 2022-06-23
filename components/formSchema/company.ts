@@ -115,5 +115,13 @@ export const companyFields=[
       className:"mb-5 mt-2 text-gray-600 focus:outline-none  font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
 
       type: "text"
-    }
+    },
+    {
+        name: "Uploader",
+        label: "Uploader",
+        placeholder: "https://...",
+        className:"mb-5 mt-2 text-gray-600 focus:outline-none  font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+  
+        type: "upload"
+      }
   ];

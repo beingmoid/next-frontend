@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { AnySchema, SchemaSpec } from 'yup/lib/schema';
 import * as yup from 'yup';
 import { Select } from './select';
+import { Uploader } from './uploader';
 
 type Props = {
   form: any;
@@ -89,16 +90,20 @@ const FormBuilder: FunctionComponent<FormProps> = ({
         case 'select':
             return (
                 <div>
-                <label className="font-semibold block py-2">{param?.label}</label> <Select param={param} ></Select>
+                <label className="font-semibold block py-2">{param?.label}</label> <Select param={param} register={register}></Select>
                 </div>
      
             );
-            break;
+           
 
 
 
         case 'upload':
+             return(   <div>
+                    <Uploader param={param} register={register}/>
+                </div>);
 
+            break;
             default:
                 break;
             
