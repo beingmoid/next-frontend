@@ -76,6 +76,17 @@ const SideBar = () => {
               &nbsp;Companies
             </div>
           </a>
+          <a
+            href="/store"
+            className="block py-4 px-4 hover:bg-driftwood-500 rounded transition duration-200"
+          >
+            <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+</svg>
+              &nbsp;store
+            </div>
+          </a>
          {/*  <a
             href="/"
             className="block py-4 px-4 hover:bg-driftwood-500 rounded hover:text-alabaster-300 transition duration-200"
