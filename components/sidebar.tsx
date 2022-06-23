@@ -37,7 +37,7 @@ const SideBar = () => {
       </div>
 
       <div
-        className={`bg-emerald-800 text-white w-64 space-y-6 px-2 py-7 absolute inset-y-0 left-0 transform ${
+        className={`bg-emerald-800 text-white w-64 space-y-6 px-2 py-7 relative inset-y-0 left-0 transform ${
           !isMenuOpen ? '-translate-x-full' : ''
         } md:relative md:translate-x-0 transition duration-200 ease-out`}
       >
