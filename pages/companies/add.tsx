@@ -61,14 +61,22 @@ fieldConfig:{name:string,type:string,className:string};
    
    // const onSubmit = (data:any) => console.log('heelo',data);
     const onSubmit= (data:any)=>{
+      var payload ={
+        firstName:data.firstName,
+        secondName:data.secondName,
+        email:data.email,
+        countryId:parseInt(data.countryId),
+        cityId:parseInt(data.cityId),
+        stateId:parseInt(data.stateId),
 
+      }
       var config = {
         method: 'post',
         url: 'http://localhost:3002/api/company',
         headers: { 
           'Content-Type': 'application/json'
         },
-        data : data
+        data : payload
       };
       axios(config).then(
         response=> response
