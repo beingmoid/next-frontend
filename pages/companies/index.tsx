@@ -4,7 +4,9 @@ import fetcher from '@lib/fetcher';
 import React, { useEffect } from 'react';
 import AddCompany from './add';
 import useSWR from 'swr';
+import {useQuery} from 'react-query'
 import Modal from '@components/modal';
+import axios from 'axios'
 type CompanyDTO = {
   name: string;
   address: string;
@@ -12,52 +14,112 @@ type CompanyDTO = {
   email: string;
   city: string;
 };
-export default function Company() {
+export default  function Company() {
   const columns: any = React.useMemo(
     () => [
       {
-        Header: 'Name',
-        accessor: 'name'
+        Header: 'First Name',
+        accessor: 'firstName'
       },
       {
-        Header: 'Address',
-        accessor: 'address'
-      },
-      {
-        Header: 'Phone',
-        accessor: 'phone'
+        Header: 'Last Name',
+        accessor: 'lastName'
       },
       {
         Header: 'Email',
         accessor: 'email'
       },
       {
-        Header: 'City',
-        accessor: 'City'
+        Header:'City',
+        accessor:'cityId'
       }
+      
     ],
     []
   );
   const [showModal, setShowModal] = React.useState(false);
-  async function fetching(): Promise<CompanyDTO[]> {
-    var response = await fetch('http://192.168.100.43:5001/api/company', {
-      method: 'GET',
-      redirect: 'follow'
-    })
-      .then(response => response.json())
-      .then(result => {
-        return result as CompanyDTO[];
-      });
 
-    console.log(response);
-    return response;
-  }
 
-  const { data, error } = useSWR<CompanyDTO[]>('api/company', fetching);
+ const {isLoading,data,isFetched,isFetching}= useQuery<any>('company-key',  async ()=>{
+
+   return (await axios.get('http://localhost:3002/api/company',{
+    method:'GET'
+  }).then(response=> response.data)
+  .then(res=>{
+
+        if(res.length>0){
+            return res 
+        }
+        else{
+          return new Array<CompanyDTO>();
+        }
+  })) ;
+
+});
+
+const country = useQuery<any>('country-list',async ()=>{
+
+  return (await axios.get('http://localhost:3002/api/lookup/countries',{
+    method:'GET'
+  }).then(response=> response.data)
+  .then(res=>{
+
+        if(res.length>0){
+            return res 
+        }
+        else{
+          return new Array<any>();
+        }
+  })) ;
+
+},{
+  cacheTime:60000
+});
+
+const state = useQuery<any>('state-list',async ()=>{
+
+  return (await axios.get('http://localhost:3002/api/lookup/states',{
+    method:'GET'
+  }).then(response=> response.data)
+  .then(res=>{
+
+        if(res.length>0){
+            return res 
+        }
+        else{
+          return new Array<any>();
+        }
+  })) ;
+
+},{
+  cacheTime:60000
+});
+const city = useQuery<any>('city-list',async ()=>{
+
+  return (await axios.get('http://localhost:3002/api/lookup/cities',{
+    method:'GET'
+  }).then(response=> response.data)
+  .then(res=>{
+
+        if(res.length>0){
+            return res 
+        }
+        else{
+          return new Array<any>();
+        }
+  })) ;
+
+},{
+  cacheTime:60000
+});
+
+ 
+
+
   return (
     <div>
       <header className="bg-white shadow">
-        <strong> Manage Companies</strong>
+        <strong> Manage Companies {isLoading} </strong>
       </header>
       <main>
         <div className="container mx-auto">
@@ -83,7 +145,7 @@ export default function Company() {
       </>
       ) : null}
           </div>
-          {data ? <Table columns={columns} data={data}></Table> : ''}
+          {isFetching ? 'Loading'  : <Table columns={columns} data={data}></Table>}
         </div>
       </main>
     </div>

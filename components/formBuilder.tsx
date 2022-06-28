@@ -1,61 +1,28 @@
 import { Field, Form } from '@lib/types';
 import { NextPage } from 'next';
-import React, { Component, FunctionComponent } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import React, { Component, FunctionComponent,useCallback } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AnySchema, SchemaSpec } from 'yup/lib/schema';
 import * as yup from 'yup';
 import { Select } from './select';
 import { Uploader } from './uploader';
 
-type Props = {
-  form: any;
-};
-export type FormType = {
-  key: string;
-  required: boolean;
-  min: { number: number; text: string };
-  label: { text: string; classNameName: string };
-  type: string;
-  classNameName: string;
-};
-
-export type FormInputType = Omit<FormType[], string>;
-export const INITIAL_VALUES: FormType = {
-  key: '',
-  required: false,
-  min: { number: 0, text: '' },
-  label: { text: '', classNameName: '' },
-  type: '',
-  classNameName: ''
-};
-
 type FormProps = {
   formFields: Array<any>;
-  yupSchema: yup.InferType<any>;
+  
   className: string;
-};
 
+  
+};
 const FormBuilder: FunctionComponent<FormProps> = ({
   formFields,
-  yupSchema,
-  className
+
+
 }: FormProps) => {
-  const {
-    formState: { errors },
-    register
-  } = useForm({ mode: 'onTouched' });
 
-  const [checked,setChecked]=React.useState(false);
-  const [checked2,setChecked2]=React.useState(false);
+  const {register,watch} = useFormContext();
 
-  const setCheck= (name:any,value:boolean)=>{
-    if(name==="checked1")
-        setChecked(value)
-    else
-        setChecked2(value)
-  };
-  console.log(formFields, yupSchema);
 
   const switchcase = (param: any) => {
     switch (param?.type) {
@@ -65,14 +32,14 @@ const FormBuilder: FunctionComponent<FormProps> = ({
           <React.Fragment>
            
 
-        
+          {watch(param?.name)}
             <label className="text-gray-800  text-sm font-bold leading-tight tracking-normal mb-4 mt-4">
             {param?.label}
             </label>
 
        
             <input
-              id="name"
+              
               className={param?.className}
               type="text"
               placeholder={param?.placeholder}
@@ -81,7 +48,7 @@ const FormBuilder: FunctionComponent<FormProps> = ({
               
 
               />
-     
+
           </React.Fragment>
           </div>
         )
@@ -90,7 +57,8 @@ const FormBuilder: FunctionComponent<FormProps> = ({
         case 'select':
             return (
                 <div>
-                <label className="font-semibold block py-2">{param?.label}</label> <Select param={param} register={register}></Select>
+                <label className="font-semibold block py-2">{param?.label}</label> 
+                <Select param={param} register={register}></Select>
                 </div>
      
             );
@@ -110,10 +78,11 @@ const FormBuilder: FunctionComponent<FormProps> = ({
      
     }
   };
-
+  
   return (
     <div>
-      <form>
+    
+        
         {formFields.map(field => {
           return <React.Fragment>
         
@@ -129,7 +98,8 @@ const FormBuilder: FunctionComponent<FormProps> = ({
         }
         )
         }
-      </form>
+   
+
     </div>
     
   );

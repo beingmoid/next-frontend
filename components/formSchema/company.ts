@@ -1,16 +1,17 @@
 import * as yup from 'yup';
 import { string } from 'yup';
+import {useQuery} from 'react-query';
+
+
 
 type LabelValuePair = {
-    label: string;
-    value: string;
+    id: number;
+    name: string;
   };
   
   // Now let's create the actual pairs: 
   const formPairs: Array<LabelValuePair> = [
-    { label: 'Stein', value: 'stone' },
-    { label: 'Glas', value: 'glas' },
-    { label: 'Plastik', value: 'plastic' },
+  
   ];
   type SelectType = typeof formPairs[number]['value'];
 const Countries =(countries:string[])=> {
@@ -20,12 +21,10 @@ const Countries =(countries:string[])=> {
 
 export const companySchema = yup.object({
   companyName: yup.string().defined().required(),
-  websiteUrl: yup.string().default('').required(),
-  addressLine1:yup.string().default('').required(),
-  addressLine2:yup.string().default('').required(),
-  country:yup.mixed<SelectType>().oneOf(formPairs.map(i=>i.value)),
-  state:yup.mixed<SelectType>().oneOf(formPairs.map(i=>i.value)),
-  town:yup.string().default('').required(),
+  email:yup.string().defined().required(),
+  countryId:yup.mixed<any>().oneOf(formPairs.map(i=>i.id)),
+  stateId:yup.mixed<any>().oneOf(formPairs.map(i=>i.id)),
+  cityId:yup.mixed<any>().oneOf(formPairs.map(i=>i.id)),
   postalCode:yup.string().default('').required(),
   phone:yup.string().default('').required(),
   vatNumber:yup.string().default('').required(),
@@ -45,10 +44,10 @@ export const companyFields=[
     {
       name: "websiteUrl",
       className:"mb-5 mt-2 text-gray-600 focus:outline-none  font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
-      
       label: "Website Url",
       placeholder: "https://",
       type: "text"
+
     },
     {
       name: "addressLine1",
@@ -71,25 +70,24 @@ export const companyFields=[
       label: "Country",
       placeholder: "Country",
       className:"mb-5 mt-2 text-gray-600 focus:outline-none  font-normal w-full h-10 flex items-center pl-3 text-sm border border-gray-200rounded border",
-
       type: "select",
-      options:["Pakistan","India","Bangladesh"]
+      queryKey:'country-list',
     },
     {
-      name: "state",
+      name: "stateId",
       label: "State",
       placeholder: "State",
       className:"mb-5 mt-2 text-gray-600 focus:outline-none  font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
-
+      queryKey:'state-list',
       type: "select"
     },
     {
-      name: "town",
-      label: "Town",
-      placeholder: "Town",
+      name: "cityId",
+      label: "City",
+      placeholder: "City",
       className:"mb-5 mt-2 text-gray-600 focus:outline-none  font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
-
-      type: "text"
+      queryKey:'city-list',
+      type: "select"
     },
     {
       name: "postalCode",
@@ -116,12 +114,12 @@ export const companyFields=[
 
       type: "text"
     },
-    {
-        name: "Uploader",
-        label: "Uploader",
-        placeholder: "https://...",
-        className:"mb-5 mt-2 text-gray-600 focus:outline-none  font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+    // {
+    //     name: "Uploader",
+    //     label: "Uploader",
+    //     placeholder: "https://...",
+    //     className:"mb-5 mt-2 text-gray-600 focus:outline-none  font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
   
-        type: "upload"
-      }
+    //     type: "upload"
+    //   }
   ];
