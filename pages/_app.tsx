@@ -1,4 +1,5 @@
 import '@styles/globals.css';
+import 'bootstrap/dist/css/bootstrap-grid.css';
 import type { AppProps } from 'next/app';
 import Layout from '@components/layout';
 import { QueryClient, QueryClientProvider } from 'react-query';

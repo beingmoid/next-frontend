@@ -1,157 +1,113 @@
-import FormBuilder from "@components/formBuilder";
-import { Form } from "@lib/types";
-
-import { NextPage } from "next";
-import * as yup from "yup";
-import { companyFields, companySchema } from "@components/formSchema/company";
-import CustomForm from "@components/customForm";
-import { useForm, FormProvider, useFormContext } from "react-hook-form";
-import axios from "axios";
-import { AnySchema } from "yup";
-import { useCallback, useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { watch } from "fs";
-import { AlertSuccess, AlertError, AlertWarning, AlertInfo } from "@components/sweetalert";
 import { IBaseResponse } from "@components/BaseResponse";
+import Modal from "@components/modal";
+import { AlertError, AlertSuccess } from "@components/sweetalert";
+import axios from "axios";
 import React from "react";
-const useYupValidationResolver = (validationSchema: AnySchema) =>
-  useCallback(
-    async data => {
-      try {
-        const values = await validationSchema.validate(data, {
-          abortEarly: false
-        });
-
-        return {
-          values,
-          errors: {}
-        };
-      } catch (errors: any) {
-        return {
-          values: {},
-          errors: errors.inner.reduce(
-            (allErrors: any, currentError: any) => ({
-              ...allErrors,
-              [currentError.path]: {
-                type: currentError.type ?? "validation",
-                message: currentError.message
-              }
-            }),
-            {}
-          )
-        };
-      }
-    },
-    [validationSchema]
-  );
+import { useForm } from "react-hook-form";
+import { useQuery } from "react-query";
 
 
+export default function EditCompany(props:any){
 
-type FormValue = {
-  fieldConfig: { name: string, type: string, className: string };
-}
-
-
-
-
-export default function AddCompany(props:any) {
-  // const resolver = useYupValidationResolver(companySchema);
-  const country = useQuery<any[]>('country-list')?.data;
-  const city = useQuery<any[]>('city-list')?.data;
-  const state = useQuery<any[]>('state-list')?.data;
-  const { register, watch, handleSubmit, getValues, formState,setValue } = useForm();
-  const [isEditMode,setIsEditMode]=React.useState(false);
-  const [id,setId]=useState(0);
-  // const onSubmit = (data:any) => console.log('heelo',data);
-
-  useEffect(()=>{
-    if(props.isEditMode){
-      setIsEditMode(true);
-      setId(props.id);
-      const fields = ['firstName','lastName','companyName','website','addressLine1'
-    ,'addressLine2','zipcode','phone','vatNumber','countryId','email','cityId','stateId']
-      fields.forEach(field=> setValue(field,props.data[field]))
-    // form.append('companyName',data.companyName);
-      // form.append('website',data.website);
-      // form.append('addressLine1',data.addressLine1);
-      // form.append('addressLine2',data.addressLine2);
-      // form.append('zipcode',data.zipcode);
-      // form.append('phone',data.phone);
-      // form.append('vatNumber',data.vatNumber);
-      // form.append('firstName',data.firstName);
-      // form.append('lastName',data.lastName);
-      // form.append('countryId',data.countryId);
-      // form.append('email',data.email);
-      // form.append('cityId',data.cityId);
-      // form.append('stateId',data.stateId);
-    }
-  },[])
-
-  const onSubmit = async (data: any) => {
-    // var payload = {
-    //   firstName: data.firstName,
-    //   secondName: data.secondName,
-    //   email: data.email,
-    //   countryId: parseInt(data.countryId),
-    //   cityId: parseInt(data.cityId),
-    //   stateId: parseInt(data.stateId),
-
-    // }
-    var fileList:FileList=data.file as FileList;
+    // const[open,SetOpen]=React.useState(false);
+    const country = useQuery<any[]>('country-list')?.data;
+    const city = useQuery<any[]>('city-list')?.data;
+    const state = useQuery<any[]>('state-list')?.data;
+    const { register, watch, handleSubmit, getValues, formState,setValue } = useForm({
+        defaultValues:{
+            companyName:props.data.companyName,
+            website:props.data.website,
+            addressLine1:props.data.addressLine1,
+            addressLine2:props.data.addressLine2,
+            zipcode:props.data.zipcode,
+            phone:props.data.phone,
+            vatNumber:props.data.vatNumber,
+            firstName:props.data.firstName,
+            lastName:props.data.lastName,
+            email:props.data.email,
+            countryId:props.data.countryId,
+            stateId:props.data.stateId,
+            cityId:props.data.cityId,
+            file:props.data.companyLogo
+        }
+    });
+    console.log(props);
+    const onSubmit = async (data: any) => {
+        // var payload = {
+        //   firstName: data.firstName,
+        //   secondName: data.secondName,
+        //   email: data.email,
+        //   countryId: parseInt(data.countryId),
+        //   cityId: parseInt(data.cityId),
+        //   stateId: parseInt(data.stateId),
     
-    var form = new FormData();
-    if(fileList[0]){
-      form.append('file',fileList[0]);
-    }
-  
-    form.append('companyName',data.companyName);
-    form.append('website',data.website);
-    form.append('addressLine1',data.addressLine1);
-    form.append('addressLine2',data.addressLine2);
-    form.append('zipcode',data.zipcode);
-    form.append('phone',data.phone);
-    form.append('vatNumber',data.vatNumber);
-    form.append('firstName',data.firstName);
-    form.append('lastName',data.lastName);
-    form.append('countryId',data.countryId);
-    form.append('email',data.email);
-    form.append('cityId',data.cityId);
-    form.append('stateId',data.stateId);
-    var config = {
-      method: 'post',
-      url: 'http://localhost:3002/api/company',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      data: form
-    };
-    await axios(config).then(
-      response => response
-    )
-      .then(res => res)
-      .then(response=>{
-          if((response.data as IBaseResponse).statusCode==200){
-            props.setShowModal(false);
-           AlertSuccess('Company has been Added Successfully','').then((res)=>{
-
-           });
-          }
-      })
-
-
-  }
-
-  return (
-
-    <div>
-
-      <form method="post" onSubmit={handleSubmit((data: any) => {
-        console.log('plz', data);
-        onSubmit(data)
-      })}  >
-
- 
-        <div className="row">
+        // }
+        var fileList:FileList=data.file as FileList;
+        
+        var form = new FormData();
+        if(fileList[0]){
+          form.append('file',fileList[0]);
+        }
+        form.append('id',props.data.id);
+        form.append('companyName',data.companyName);
+        form.append('website',data.website);
+        form.append('addressLine1',data.addressLine1);
+        form.append('addressLine2',data.addressLine2);
+        form.append('zipcode',data.zipcode);
+        form.append('phone',data.phone);
+        form.append('vatNumber',data.vatNumber);
+        form.append('firstName',data.firstName);
+        form.append('lastName',data.lastName);
+        form.append('countryId',data.countryId);
+        form.append('email',data.email);
+        form.append('cityId',data.cityId);
+        form.append('stateId',data.stateId);
+        var config = {
+          method: 'put',
+          url: 'http://localhost:3002/api/company/'+props.data.id,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          data: form
+        };
+        await axios(config).then(
+          response => response
+        )
+          .then(res => res)
+          .then(response=>{
+              if((response.data as IBaseResponse).statusCode==200){
+               
+               AlertSuccess('Company has been Updated Successfully','').then((res)=>{
+                    props.setEdit(false);
+               });
+               
+              }
+              else{
+                AlertError('Company has been failed to update','');
+              }
+          })
+    
+    
+      }
+    return(<div>
+        <div className="py-12 bg-neutral-800/50 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0" id="modal" aria-hidden="true">
+                <div role="alert" className="container mx-auto w-8/12 ">
+                    <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
+                        <div className="w-full flex justify-start text-gray-600 mb-3">
+                            <svg  xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-wallet" width="52" height="52" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" />
+                                <path d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12" />
+                                <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
+                            </svg>
+                        </div>
+                        <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4"> Update Company </h1>
+                        
+                        <form
+                        onSubmit={handleSubmit((data: any) => {
+                            console.log('plz', data);
+                            onSubmit(data)
+                          })} >
+                        <div className="row">
           <div className="col-md-6">
             <div>
 
@@ -378,16 +334,25 @@ tracking-normal mb-4 mt-4">
 
 
 
-                            <button className="mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring--teal-600  transition duration-150 ease-in-out hover:bg-teal-500 bg-teal-600 rounded text-white px-8 py-2 text-sm"       type="submit">Submit</button>
-                            <button className="mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring--teal-600  transition duration-150 ease-in-out hover:bg-teal-500 bg-red-600 rounded text-white px-8 py-2 text-sm"  onClick={()=>   props.setShowModal(false)}   >Cancel</button>
+                            
                            
              
-      </form>
-
-
-
-    </div>
-
-  );
+                        </form>
+                       
+                        <div className="flex items-center justify-start w-full">
+                        <button className="mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring--teal-600  transition duration-150 ease-in-out hover:bg-teal-500 bg-teal-600 rounded text-white px-8 py-2 text-sm"       type="submit">Update</button>
+                            <button className="mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring--teal-600  transition duration-150 ease-in-out hover:bg-teal-500 bg-red-600 rounded text-white px-8 py-2 text-sm"     onClick={()=> props.setEdit(false)}  >Camcel</button>
+                        </div>
+                        <button className="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out rounded focus:ring-2 focus:outline-none focus:ring-gray-600"  aria-label="close modal" role="button">
+                            <svg  xmlns="http://www.w3.org/2000/svg"  className="icon icon-tabler icon-tabler-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" />
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        
+    </div>)
 }
-

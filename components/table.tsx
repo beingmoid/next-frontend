@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import {
   useAsyncDebounce,
@@ -73,13 +74,18 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }: 
     </label>
   );
 };
+const styles={
+  'cursor':'pointer'
+}
 
 type Props = {
   columns: any;
   data: any;
+  handleChange:any;
+  deleteItem:any;
 };
 
-const Table = ({ columns, data }: Props) => {
+const Table = ({ columns, data,handleChange, deleteItem }: Props) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -142,10 +148,11 @@ const Table = ({ columns, data }: Props) => {
               <table {...getTableProps()} className="min-w-full divide-y divide-shark-300">
                 <thead className="bg-shark-50">
                   {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
+                    <tr {...headerGroup.getHeaderGroupProps()} >
                       {headerGroup.headers.map(column => (
                         // Add the sorting props to control sorting. For this example
                         // we can add them into the header props
+                      
                         <th
                           scope="col"
                           className="group px-6 text-left text-sm font-medium text-shark-500 uppercase tracking-wider"
@@ -154,6 +161,7 @@ const Table = ({ columns, data }: Props) => {
                           <div className="flex items-center justify-between">
                             {column.render('Header')}
                             {/* Add a sort direction indicator */}
+                            {column.isVisible}
                             <span>
                               {column.isSorted ? (
                                 column.isSortedDesc ? (
@@ -167,6 +175,7 @@ const Table = ({ columns, data }: Props) => {
                             </span>
                           </div>
                         </th>
+                        
                       ))}
                     </tr>
                   ))}
@@ -179,14 +188,23 @@ const Table = ({ columns, data }: Props) => {
                   {page.map((row, i) => {
                     prepareRow(row);
                     return (
-                      <tr {...row.getRowProps()}>
+                      <tr style={styles} {...row.getRowProps()} onClick={()=> handleChange(row.original)}>
                         {row.cells.map(cell => {
                           return (
-                            <td className="px-6 py-4 whitespace-nowrap" {...cell.getCellProps()}>
+                            <td className="px-6 py-4 whitespace-nowrap" {...cell.getCellProps()} >
                               {cell.render('Cell')}
+                            
                             </td>
+                            
                           );
                         })}
+
+                        <td   > 
+                        
+ 
+ 
+                         <a onClick={()=> deleteItem(row.original)} > delete</a>
+                        </td>
                       </tr>
                     );
                   })}

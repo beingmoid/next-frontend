@@ -5,13 +5,13 @@ import { Component } from "react"
 type Props={
     setShowModal:any;
     modalTitle:string;
-    FormComponent:NextPage
+    FormComponent:any
 }
 const Modal = ({setShowModal,modalTitle,FormComponent}:Props)=>{
 
 
     return(  <>
-             <div className="py-12 bg-neutral-800/50 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0" id="modal">
+             <div className="py-12 bg-neutral-800/50 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0" id="modal" aria-hidden="true">
                 <div role="alert" className="container mx-auto w-8/12 ">
                     <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                         <div className="w-full flex justify-start text-gray-600 mb-3">
@@ -23,10 +23,9 @@ const Modal = ({setShowModal,modalTitle,FormComponent}:Props)=>{
                         </div>
                         <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">{modalTitle} </h1>
                         
-                       <FormComponent/>
+                       <FormComponent setShowModal={setShowModal}/>
                         <div className="flex items-center justify-start w-full">
-                            {/* <button className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring--teal-600  transition duration-150 ease-in-out hover:bg-teal-500 bg-teal-600 rounded text-white px-8 py-2 text-sm"       onClick={() =>setShowModal(false)}>Submit</button>
-                            <button className="focus:outline-none focus:ring-2 focus:ring-offset-2  focus:ring-gray-400 ml-3 bg-gray-100 transition duration-150 text-gray-600 ease-in-out hover:border-gray-400 hover:bg-gray-300 border rounded px-8 py-2 text-sm"       onClick={() =>setShowModal(false)} >Cancel</button> */}
+                          
                         </div>
                         <button className="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out rounded focus:ring-2 focus:outline-none focus:ring-gray-600"  aria-label="close modal" role="button">
                             <svg  xmlns="http://www.w3.org/2000/svg"  className="icon icon-tabler icon-tabler-x" width="20" height="20" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">

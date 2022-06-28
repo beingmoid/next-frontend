@@ -11,9 +11,9 @@ type LabelValuePair = {
   
   // Now let's create the actual pairs: 
   const formPairs: Array<LabelValuePair> = [
-  
+  {id:1,name:'Moid'}
   ];
-  type SelectType = typeof formPairs[number]['value'];
+  type SelectType = typeof formPairs[number]['name'];
 const Countries =(countries:string[])=> {
 
     return ["Pakistan","USA"];
